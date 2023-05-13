@@ -1,41 +1,45 @@
-import { Component } from "react";
+import { useEffect, memo } from "react";
 import { createPortal } from 'react-dom';
 import {Overlay, ModalContainer } from './Modal.styled';
+import PropTypes from 'prop-types';
 
 const modalRoot = document.querySelector('#modal-root');
 
-export default class Modal extends Component {
+function Modal ({onCloseModal, url, alt}) {
 
-    componentDidMount() {
-        window.addEventListener('keydown', this.handleKeydown);
-    };
+    useEffect(() => {
+            window.addEventListener('keydown', handleKeydown);
+        return () => {
+            window.removeEventListener('keydown', handleKeydown)
+        }
+    })
 
-    componentWillUnmount() {
-        window.removeEventListener('keydown', this.handleKeydown)
-    };
-
-    handleKeydown = e => {
+    const handleKeydown = e => {
         if (e.code === 'Escape') {
-            this.props.onCloseModal()
+            onCloseModal()
         };
     };
 
-    clickOnBackdrop = e => {
+    const clickOnBackdrop = e => {
         if (e.target === e.currentTarget) {
-            this.props.onCloseModal();
+            onCloseModal();
         };
     };
 
-    render() {
-        const { url, alt } = this.props;
-        
         return createPortal(
-            <Overlay onClick={this.clickOnBackdrop}>
+            <Overlay onClick={clickOnBackdrop}>
                 <ModalContainer>
                     <img src={url} alt={alt} />
                 </ModalContainer>
             </Overlay>,
             modalRoot
         )
-    };
-}
+};
+
+export default memo(Modal);
+
+Modal.propTypes = {
+            onCloseModal: PropTypes.func.isRequired,
+            alt: PropTypes.string.isRequired,
+            url: PropTypes.string.isRequired,
+};
