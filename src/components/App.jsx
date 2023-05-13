@@ -14,7 +14,7 @@ export function App() {
   const [images, setImages] = useState([]);
   const [page, setPage] = useState(null);
   const [totalHits, setTotalHits] = useState(1);
-  const [ setError] = useState(null);
+  const [error, setError] = useState(null);
   const [status, setStatus] = useState('idle');
 
   useEffect(() => {
@@ -72,6 +72,7 @@ export function App() {
       return <Container>
         <Searchbar onSubmit={onSubmitForm} />
         <ImageGallery images={images} /> 
+        {console.log(error)}
       </Container>
     };
 
